@@ -6,11 +6,13 @@ export const clientEnv = createEnv({
     NEXT_PUBLIC_ENV: z.enum(["development", "test", "production"]),
     NEXT_PUBLIC_MAGIC_API_KEY: z.string(),
     NEXT_PUBLIC_ALCHEMY_GAS_MANAGER_POLICY_ID: z.string(),
+    NEXT_PUBLIC_ALCHEMY_RPC_URL: z.string(),
   },
   runtimeEnv: {
     NEXT_PUBLIC_ENV: process.env.NODE_ENV ?? "development",
     NEXT_PUBLIC_MAGIC_API_KEY: process.env.NEXT_PUBLIC_MAGIC_API_KEY,
     NEXT_PUBLIC_ALCHEMY_GAS_MANAGER_POLICY_ID:
       process.env.NEXT_PUBLIC_ALCHEMY_GAS_MANAGER_POLICY_ID,
+    NEXT_PUBLIC_ALCHEMY_RPC_URL: process.env.NEXT_PUBLIC_ALCHEMY_RPC_URL,
   },
 });

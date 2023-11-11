@@ -1,18 +1,24 @@
 "use client";
 import { useWalletContext } from "@/context/wallet";
 import { useCallback, useState } from "react";
+import { useMagicSigner } from "@/hooks/useMagicSigner";
 
 export default function Navbar() {
   const [isLoggingIn, setIsLoggingIn] = useState<boolean>(false);
   const [isLoggingOut, setIsLoggingOut] = useState<boolean>(false);
   const [email, setEmail] = useState<string>("");
 
+  const { magic } = useMagicSigner();
+
   const { isLoggedIn, login, logout, username, scaAddress } =
     useWalletContext();
 
-  const openModal = useCallback(() => {
+  const openModal = useCallback(async () => {
+    if (!magic) return;
     setIsLoggingIn(true);
-  }, []);
+    const accounts = await magic.wallet.connectWithUI();
+    console.log("accounts", accounts);
+  }, [magic]);
 
   const closeModal = useCallback(() => {
     setIsLoggingIn(false);
@@ -56,7 +62,7 @@ export default function Navbar() {
             onClick={openModal}
             className="btn text-white bg-gradient-1 disabled:opacity-25 disabled:text-white transition ease-in-out duration-500 transform hover:scale-110 max-md:w-full"
           >
-            {isLoggingIn ? "Logging In" : "Log In"} With Email
+            {isLoggingIn ? "Logging In" : "Log In"}
             {isLoggingIn && (
               <span className="loading loading-spinner loading-md"></span>
             )}
@@ -76,7 +82,7 @@ export default function Navbar() {
       </div>
 
       {/* login pop-up modal */}
-      <dialog className={`modal ${isLoggingIn && "modal-open"}`}>
+      {/* <dialog className={`modal ${isLoggingIn && "modal-open"}`}>
         <div className="modal-box flex flex-col gap-[12px]">
           <h3 className="font-bold text-lg">Enter your email!</h3>
           <input
@@ -99,7 +105,7 @@ export default function Navbar() {
             </button>
           </div>
         </div>
-      </dialog>
+      </dialog> */}
     </div>
   );
 }

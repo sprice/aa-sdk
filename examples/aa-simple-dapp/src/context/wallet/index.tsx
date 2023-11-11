@@ -47,21 +47,23 @@ export const WalletContextProvider = ({
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   const { magic, signer } = useMagicSigner();
+
   const { provider, connectProviderToAccount, disconnectProviderFromAccount } =
     useAlchemyProvider();
 
   const login = useCallback(
     async (email: string) => {
       if (!magic || !magic.user || !signer) {
-        throw new Error("Magic not initialized");
+        console.error("Magic not initialized");
+        return;
       }
-
       const didToken = await magic.auth.loginWithEmailOTP({
         email,
       });
       const metadata = await magic.user.getMetadata();
       if (!didToken || !metadata.publicAddress || !metadata.email) {
-        throw new Error("Magic login failed");
+        console.error("Magic login failed");
+        return;
       }
 
       setIsLoggedIn(true);
@@ -75,11 +77,13 @@ export const WalletContextProvider = ({
 
   const logout = useCallback(async () => {
     if (!magic || !magic.user) {
-      throw new Error("Magic not initialized");
+      console.error("Magic not initialized");
+      return;
     }
 
     if (!(await magic.user.logout())) {
-      throw new Error("Magic logout failed");
+      console.error("Magic logout failed");
+      return;
     }
 
     setIsLoggedIn(false);
@@ -92,7 +96,8 @@ export const WalletContextProvider = ({
   useEffect(() => {
     async function fetchData() {
       if (!magic || !magic.user || !signer) {
-        throw new Error("Magic not initialized");
+        console.error("Magic not initialized");
+        return;
       }
 
       const isLoggedIn = await magic.user.isLoggedIn();
